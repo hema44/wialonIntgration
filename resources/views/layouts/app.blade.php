@@ -13,8 +13,6 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="{{asset("assets/bootstrap.min.css")}}" rel="stylesheet" >
-{{--    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKXKdHQdtqgPVl2HI2RnUa_1bjCxRCQo4" defer></script>--}}
-
     <!-- Scripts -->
 </head>
 <body>
@@ -32,7 +30,7 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         <li class="navbar-item me-2"><a style="text-underline: none;" href="{{route("liveTracking")}}">live Tracking</a></li>
-                        <li class="navbar-item me-2"><a>GeoFence</a></li>
+                        <li class="navbar-item me-2"><a style="text-underline: none;" href="{{route("zone")}}">GeoFence</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

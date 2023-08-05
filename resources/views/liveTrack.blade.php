@@ -30,30 +30,22 @@
         function initMap() {
 
             var locations = @json($items);
+            var data =  @json($data);
+
             var markers = [];
 
             function updateMarkerLocation(marker, newLatLng) {
                 marker.setPosition(newLatLng);
             }
             var map;
-            
-            if(locations[0].pos.y){
-                 map = new google.maps.Map(document.getElementById('marker-map'), {
-                    center: {
-                        lat: locations[0].pos.y,
-                        lng: locations[0].pos.x
-                    },
-                    zoom: 17
-                });
-            }else {
-                 map = new google.maps.Map(document.getElementById('marker-map'), {
-                    center: {
-                        lat: 0,
-                        lng: 0
-                    },
-                    zoom: 3
-                });
-            }
+
+
+             map = new google.maps.Map(document.getElementById('marker-map'), {
+                center: {
+                     lat: Number(data["latitude"]), lng: Number(data["longitude"])
+                },
+                zoom: 10
+            });
 
 
             for (var i = 0; i < locations.length; i++) {
@@ -61,7 +53,7 @@
 
                 var marker = new google.maps.Marker({
                     icon: {
-                        "url":"http://gps.tawasolmap.com"+location.uri,
+                        "url":"https://gps.tawasolmap.com"+location.uri,
                         "scaledSize" : {"width":40,"height":60}
                     },
                     position: { lat: location.pos.y, lng: location.pos.x },
@@ -71,26 +63,6 @@
 
                 markers.push(marker);
 
-                var infoWindowContent = '<div>' +
-                    '<h3>'+location.nm+'</h3>' +
-                    '<tabale class="table table-borader">'+
-                    '    <tr>'+
-                    '        <td>km</td>'+
-                    '        <td>'+location.cnm_km+'</td>'+
-                    '    </tr>'+
-                    '    <tr>'+
-                    '        <td>speed</td>'+
-                    '        <td>'+location.prms.speed.v+'</td>'+
-                    '    </tr>'+
-                    '</tabale>'+
-                    '</div>';
-                var infoWindow = new google.maps.InfoWindow({
-                    content: infoWindowContent
-                });
-
-                google.maps.event.addListener(marker, 'mouseover', function() {
-                    infoWindow.open(map, this);
-                });
             }
 
             // Update marker location every 50 seconds
