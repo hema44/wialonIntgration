@@ -22,11 +22,23 @@ class WialonController extends Controller
     public function liveTrackingJson(Request $request){
         $items = wialonSystemService::getData();
         $items = collect($items["items"]);
+//        dd($items);
         return response()->json(["items"=>$items],200);
     }
     public function getZones(Request $request){
         $items = wialonSystemService::getZone();
         $data = $this->data;
         return view("Gefonce",compact("items","data"));
+    }
+
+    public function createZones(Request $request){
+        $items = wialonSystemService::createZone();
+        $data = $this->data;
+        return $items;
+    }
+
+    public function checkUpdates(Request $request){
+        $items = wialonSystemService::checkUpdates();
+        return $items;
     }
 }

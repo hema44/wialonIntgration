@@ -27,5 +27,7 @@ Route::middleware("auth")->group(function (){
     Route::get('/liveTracking', [App\Http\Controllers\WialonController::class, 'liveTracking'])->name('liveTracking');
     Route::get('/liveTrackingJson', [App\Http\Controllers\WialonController::class, 'liveTrackingJson'])->name('liveTrackingJson');
     Route::get('/zone', [App\Http\Controllers\WialonController::class, 'getZones'])->name('zone');
+    Route::get('/createZones', [App\Http\Controllers\WialonController::class, 'createZones'])->name('createZones');
+    Route::get('/checkUpdates', [App\Http\Controllers\WialonController::class, 'checkUpdates'])->name('checkUpdates');
 });
 

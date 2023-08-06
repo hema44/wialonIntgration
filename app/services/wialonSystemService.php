@@ -25,10 +25,39 @@ class wialonSystemService
         {"spec":{"itemsType":"avl_unit","propName":"sys_user_creator","propValueMask":"","sortType":"creatortree"},
         "force":1,"flags":4611686018427387903,"from":0,"to":1000}&sid='.$authData["eid"]);
         $response = $response->json();
-        if (isset($response["error"]) && $response["error"] == 1){
-            self::login(Cache::get("access_token"));
-            self::getData();
+        if (isset($response["error"]) ){
+            if ($response["error"] == 1){
+                self::login(Cache::get("access_token"));
+                self::getData();
+            }else{
+                dd($response);
+            }
         }
+        return $response;
+    }
+
+    public static function checkUpdates(){
+        $authData = Cache::get("data");
+        $url = 'https://gps.tawasolmap.com/wialon/ajax.html?svc=events/check_updates&params={"lang":"en","measure":'.$authData["user"]["mu"].',"detalization":1}&sid='.$authData["eid"];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, []);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response1 = curl_exec($ch);
+        curl_close($ch);
+
+        $response = json_decode($response1, true);
+
+        if (isset($response["error"]) ){
+            if ($response["error"] == 1){
+                self::login(Cache::get("access_token"));
+                self::checkUpdates();
+            }else{
+                dd($response);
+            }
+        }
+
         return $response;
     }
 
@@ -37,11 +66,35 @@ class wialonSystemService
         $response = Http::get('https://gps.tawasolmap.com/wialon/ajax.html','svc=resource/get_zone_data&params=
         {"itemId":"'.$authData["user"]["bact"].'","col":"","flags":"4611686018427387903"}&sid='.$authData["eid"]);
         $response = $response->json();
-//        dd($response);
-        if (isset($response["error"]) && $response["error"] == 1){
-            self::login(Cache::get("access_token"));
-            self::getZone();
+        if (isset($response["error"]) ){
+            if ($response["error"] == 1){
+                self::login(Cache::get("access_token"));
+                self::getZone();
+            }else{
+                dd($response);
+            }
         }
         return $response;
     }
+
+    public static function createZone(){
+        //,
+        $authData = Cache::get("data");
+        $response = Http::get('https://gps.tawasolmap.com/wialon/ajax.html','svc=resource/update_zone&params=
+        {"itemId":"'.$authData["user"]["bact"].'","id":0,"callMode":"create","n":"",
+        "d":"","t":"","w":"","f":"","c":"","tc":"","ts":"","min":"","path":"","libId":"","oldItemId":"","oldZoneId":"","jp":"","p":["x":46.550095158667816,"y":24.72331063396075,"r":5000]}&sid='.$authData["eid"]);
+        $response = $response->json();
+
+        if (isset($response["error"]) ){
+            if ($response["error"] == 1){
+                self::login(Cache::get("access_token"));
+                self::createZone();
+            }else{
+                dd($response);
+            }
+        }
+        return $response;
+    }
+
+
 }

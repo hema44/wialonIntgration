@@ -47,7 +47,8 @@
                 zoom: 10
             });
 
-
+            var infowindow = new google.maps.InfoWindow();
+            var bounds = new google.maps.LatLngBounds();
             for (var i = 0; i < locations.length; i++) {
                 var location = locations[i];
                 if(location.pos != null){
@@ -60,9 +61,7 @@
                         map: map,
                         title: location.nm
                     });
-
-                    var infowindow = new google.maps.InfoWindow();
-                    // Show infowindow when marker is clicked
+                    bounds.extend(marker.position);
                     google.maps.event.addListener(marker, 'click', (function(marker, i) {
                         return function() {
                             infowindow.setContent('<div id="markerDetails" style=""> ' +
@@ -83,15 +82,11 @@
                     })(marker, i));
 
                     markers.push(marker);
-                    infowindows.push(infowindow);
                 }
             }
 
             // Update marker location every 50 seconds
             setInterval(function() {
-                infowindows.forEach(function(infowindow) {
-                    infowindow.close();
-                });
                 $.ajax({
                     url: '{{"liveTrackingJson"}}',
                     method: 'GET',
@@ -104,24 +99,11 @@
                             if(newLocation.pos != null){
                                 console.log("newLocation")
                                 updateMarkerLocation(marker, new google.maps.LatLng(newLocation.pos.y, newLocation.pos.x));
-                                infowindows[i].setContent('<div id="markerDetails" style=""> ' +
-                                    '<h2>'+newLocation.nm+'</h2> ' +
-                                    '<table> ' +
-                                    '<tr> ' +
-                                    '<th>total_km</th> ' +
-                                    '<td id="markerTitle">'+ newLocation.cnm_km+'</td> ' +
-                                    '</tr> '+
-                                    '<tr> ' +
-                                    '<th>last Trip km</th> ' +
-                                    '<td >'+ newLocation.crt+'</td> ' +
-                                    '</tr> ' +
-                                    '</table> ' +
-                                    '</div>');
                             }
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('AJAX Error:');
+                        console.error('AJAX Error: ' + status + ' - ' + error);
                     }
                 });
             }, 10000);
