@@ -63,7 +63,7 @@
 
                     var infowindow = new google.maps.InfoWindow();
                     // Show infowindow when marker is clicked
-                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
                         return function() {
                             infowindow.setContent('<div id="markerDetails" style=""> ' +
                                 '<h2>'+locations[i].nm+'</h2> ' +
@@ -79,6 +79,12 @@
                                 '</table> ' +
                                 '</div>');
                             infowindow.open(map, marker);
+                        }
+                    })(marker, i));
+
+                    google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+                        return function() {
+                            infowindow.close(map, marker);
                         }
                     })(marker, i));
 
