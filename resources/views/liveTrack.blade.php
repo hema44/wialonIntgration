@@ -27,7 +27,7 @@
                                                     <tr id="{{$item["id"]}}" >
                                                         <td>{{$item["nm"]}}</td>
                                                         <td>{{$item["cnm_km"]}}</td>
-                                                        <td>{{round((($trips[$item["id"]]["m"])/1000),2)}}</td>
+                                                        <td>{{$trips[$item["id"]]}}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -97,15 +97,10 @@
                             var marker = markers[i];
                             if(newLocation.pos != null){
                                 updateMarkerLocation(marker, new google.maps.LatLng(newLocation.pos.y, newLocation.pos.x));
-
-                                var floatValue = parseFloat(trips[newLocation.id].m)/1000;
-                                //Round the number to the desired decimal places
-                                var roundedValue = floatValue.toFixed(2);
-
                                 var row = document.getElementById(newLocation.id);
                                 row.innerHTML=' <td>'+newLocation.nm+'</td> ' +
                                     '<td>'+newLocation.cnm_km+'</td>' +
-                                    '<td>'+roundedValue +'</td>';
+                                    '<td>'+trips[newLocation.id] +'</td>';
                             }
                         }
                     },

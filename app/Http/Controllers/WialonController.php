@@ -45,7 +45,14 @@ class WialonController extends Controller
     public function getTrips($items){
         $trips = [];
         foreach ($items as $item){
-            $trips +=[$item =>wialonSystemService::getTrips($item)];
+            $trips +=wialonSystemService::getTrips($item);
+        }
+        return $trips;
+    }
+    public function getReportTrips($items){
+        $trips = [];
+        foreach ($items as $item){
+            $trips +=[$item =>wialonSystemService::getReportTrips($item)];
         }
         return $trips;
     }

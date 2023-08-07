@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -36,7 +37,7 @@ class wialonSystemService
         return $response;
     }
 
-    public static function getTrips($id,$d=0){
+    public static function getReportTrips($id,$d=0){
         $authData = Cache::get("data");
         $time = time();
         $url = 'https://gps.tawasolmap.com/wialon/ajax.html?svc=messages/load_interval&params={"itemId":'.$id.',"timeFrom":1688720521,"timeTo":'.$time.',"flags":0,"flagsMask":0,"loadCount":4294967295}&sid='.$authData["eid"];
@@ -83,6 +84,32 @@ class wialonSystemService
         }
         return $response[$length-1];
     }
+    public static function getTrips($id){
+        $authData = Cache::get("data");
+        $time = time();
+        $lastWeak = Carbon::now()->subDays(30)->timestamp;
+        $url = 'https://gps.tawasolmap.com/wialon/ajax.html?svc=events/load&params={"itemId":'.$id.',"ivalType":1,"timeFrom":'.$lastWeak.',"timeTo":'.$time.
+            ',"detectors":[{"type":"trips","filter1":0}],"selector":{'.
+            '"type":"trips","timeFrom":'.$lastWeak.',"timeTo":'.$time.',"detalization":35}}&sid='.$authData["eid"];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, []);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response1 = curl_exec($ch);
+        curl_close($ch);
+
+        $response = json_decode($response1, true);
+        $response =$response["selector"]["trips"][0];
+
+        $length = count($response);
+
+        if ($length == 0){
+            return [$id=>"0 km"];
+        }
+        return [$id => $response[$length-1]["format"]["distance"]];
+    }
 
     public static function checkUpdates(){
         $authData = Cache::get("data");
@@ -114,7 +141,7 @@ class wialonSystemService
         $response = Http::get('https://gps.tawasolmap.com/wialon/ajax.html','svc=resource/get_zone_data&params=
         {"itemId":"'.$authData["user"]["bact"].'","col":"","flags":"4611686018427387903"}&sid='.$authData["eid"]);
         $response = $response->json();
-//        dd($response);
+
         if (isset($response["error"]) ){
             if ($response["error"] == 1){
                 self::login(Cache::get("access_token"));
@@ -129,13 +156,6 @@ class wialonSystemService
     public static function createZone(){
 
         $authData = Cache::get("data");
-//        $response = Http::get('https://gps.tawasolmap.com/wialon/ajax.html','svc=resource/update_zone&params=
-//        {"itemId":"'.$authData["user"]["bact"].'","id":0,"callMode":"create","n":"test",
-//        "d":"test add new zone","t":3,"w":50,"f":112,"c":2145942128,"tc":2145942128,"ts":10,"min":0,"max":18,"path":"library/poi/A_19.png","libId":0,
-//        "p":["x":46.550095158667816,"y":24.72331063396075,"r":5000]}&sid='.$authData["eid"]);
-//        $response = $response->json();
-//        .'"b":["min_x":46.550095158667816,"min_y":24.72331063396075,"min_x":46.550095158667816,"min_y":24.72331063396075,"cen_x":46.550095158667816,"cen_y":24.72331063396075,]'
-
         $url = 'https://gps.tawasolmap.com/wialon/ajax.html?svc=resource/update_zone&params={'
             .'"itemId":'.$authData["user"]["bact"].',"id":0,"callMode":"create","n":"test",'
             .'"d":"test add new zone","t":3,"w":50,"f":112,"c":2145942128,"tc":2145942128,"ts":10,"min":0,"max":18,"path":"library/poi/A_4.png","libId":0,'
