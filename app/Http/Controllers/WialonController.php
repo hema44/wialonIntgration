@@ -17,12 +17,12 @@ class WialonController extends Controller
         $items = wialonSystemService::getData();
         $data = $this->data;
         $items = collect($items["items"]);
-        return view("liveTrack",compact("items","data"));
+        $trips = $this->getTrips($items->pluck("id")->toArray());
+        return view("liveTrack",compact("items","data","trips"));
     }
     public function liveTrackingJson(Request $request){
         $items = wialonSystemService::getData();
         $items = collect($items["items"]);
-//        dd($items);
         return response()->json(["items"=>$items],200);
     }
     public function getZones(Request $request){
@@ -40,5 +40,13 @@ class WialonController extends Controller
     public function checkUpdates(Request $request){
         $items = wialonSystemService::checkUpdates();
         return $items;
+    }
+
+    public function getTrips($items){
+        $trips = [];
+        foreach ($items as $item){
+            $trips +=[$item =>wialonSystemService::getTrips($item)];
+        }
+        return $trips;
     }
 }

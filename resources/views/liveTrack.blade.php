@@ -27,7 +27,7 @@
                                                     <tr id="{{$item["id"]}}" >
                                                         <td>{{$item["nm"]}}</td>
                                                         <td>{{$item["cnm_km"]}}</td>
-                                                        <td>{{$item["crt"]}}</td>
+                                                        <td>{{round((($trips[$item["id"]]["m"])/1000),2)}}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -51,6 +51,7 @@
 
             var locations = @json($items);
             var data =  @json($data);
+            var trips =  @json($trips);
 
             var markers = [];
             var infowindows = [];
@@ -94,13 +95,17 @@
                         for (var i = 0; i < newLocations.length; i++) {
                             var newLocation = newLocations[i];
                             var marker = markers[i];
-
                             if(newLocation.pos != null){
                                 updateMarkerLocation(marker, new google.maps.LatLng(newLocation.pos.y, newLocation.pos.x));
+
+                                var floatValue = parseFloat(trips[newLocation.id].m)/1000;
+                                //Round the number to the desired decimal places
+                                var roundedValue = floatValue.toFixed(2);
+
                                 var row = document.getElementById(newLocation.id);
                                 row.innerHTML=' <td>'+newLocation.nm+'</td> ' +
                                     '<td>'+newLocation.cnm_km+'</td>' +
-                                    '<td>'+newLocation.crt+'</td>';
+                                    '<td>'+roundedValue +'</td>';
                             }
                         }
                     },
@@ -108,7 +113,7 @@
                         console.error('AJAX Error:');
                     }
                 });
-            }, 10000);
+            }, 5000);
         }
     </script>
 

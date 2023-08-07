@@ -14,8 +14,31 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="{{asset("assets/bootstrap.min.css")}}" rel="stylesheet" >
     <!-- Scripts -->
+    <style>
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
+    <div id="loader" class="loader"></div>
+
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -75,9 +98,18 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+
     </div>
+
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="{{asset("assets/bootstrap.min.js")}}" ></script>
     @yield("section")
+    <script>
+        // This function will be called when the page has finished loading
+        window.onload = function () {
+            document.getElementById('loader').style.display = 'none';
+        };
+    </script>
 </body>
 </html>
