@@ -13,6 +13,26 @@
                                     <div class="card-body">
                                         <div id="marker-map" style="height: 600px;"></div>
                                     </div>
+                                    <div>
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                    <td>totalKm</td>
+                                                    <td>lastTrip</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($items as $item )
+                                                    <tr id="{{$item["id"]}}" >
+                                                        <td>{{$item["nm"]}}</td>
+                                                        <td>{{$item["cnm_km"]}}</td>
+                                                        <td>{{$item["crt"]}}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -60,44 +80,12 @@
                         map: map,
                         title: location.nm
                     });
-
-                    var infowindow = new google.maps.InfoWindow();
-                    // Show infowindow when marker is clicked
-                    google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
-                        return function() {
-                            infowindow.setContent('<div id="markerDetails" style=""> ' +
-                                '<h2>'+locations[i].nm+'</h2> ' +
-                                '<table> ' +
-                                '<tr> ' +
-                                '<th>total_km</th> ' +
-                                '<td id="markerTitle">'+ locations[i].cnm_km+'</td> ' +
-                                '</tr> '+
-                                '<tr> ' +
-                                '<th>last Trip km</th> ' +
-                                '<td >'+ locations[i].crt+'</td> ' +
-                                '</tr> ' +
-                                '</table> ' +
-                                '</div>');
-                            infowindow.open(map, marker);
-                        }
-                    })(marker, i));
-
-                    google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
-                        return function() {
-                            infowindow.close(map, marker);
-                        }
-                    })(marker, i));
-
                     markers.push(marker);
-                    infowindows.push(infowindow);
                 }
             }
 
             // Update marker location every 50 seconds
             setInterval(function() {
-                infowindows.forEach(function(infowindow) {
-                    infowindow.close();
-                });
                 $.ajax({
                     url: '{{"liveTrackingJson"}}',
                     method: 'GET',
@@ -108,21 +96,11 @@
                             var marker = markers[i];
 
                             if(newLocation.pos != null){
-                                console.log("newLocation")
                                 updateMarkerLocation(marker, new google.maps.LatLng(newLocation.pos.y, newLocation.pos.x));
-                                infowindows[i].setContent('<div id="markerDetails" style=""> ' +
-                                    '<h2>'+newLocation.nm+'</h2> ' +
-                                    '<table> ' +
-                                    '<tr> ' +
-                                    '<th>total_km</th> ' +
-                                    '<td id="markerTitle">'+ newLocation.cnm_km+'</td> ' +
-                                    '</tr> '+
-                                    '<tr> ' +
-                                    '<th>last Trip km</th> ' +
-                                    '<td >'+ newLocation.crt+'</td> ' +
-                                    '</tr> ' +
-                                    '</table> ' +
-                                    '</div>');
+                                var row = document.getElementById(newLocation.id);
+                                row.innerHTML=' <td>'+newLocation.nm+'</td> ' +
+                                    '<td>'+newLocation.cnm_km+'</td>' +
+                                    '<td>'+newLocation.crt+'</td>';
                             }
                         }
                     },
