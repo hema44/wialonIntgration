@@ -15,15 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::get('/login_back', [\App\Http\Controllers\HomeController::class,'login'])->name("login_back");
 
 Auth::routes();
 
-Route::middleware("auth")->group(function (){
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware("wialonAuth")->group(function (){
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/liveTracking', [App\Http\Controllers\WialonController::class, 'liveTracking'])->name('liveTracking');
     Route::get('/liveTrackingJson', [App\Http\Controllers\WialonController::class, 'liveTrackingJson'])->name('liveTrackingJson');
     Route::get('/zone', [App\Http\Controllers\WialonController::class, 'getZones'])->name('zone');

@@ -82,7 +82,9 @@ class wialonSystemService
         $authData = Cache::get("data");
         $response = Http::get('https://gps.tawasolmap.com/wialon/ajax.html','svc=resource/update_zone&params=
         {"itemId":"'.$authData["user"]["bact"].'","id":0,"callMode":"create","n":"",
-        "d":"","t":"","w":"","f":"","c":"","tc":"","ts":"","min":"","path":"","libId":"","oldItemId":"","oldZoneId":"","jp":"","p":["x":46.550095158667816,"y":24.72331063396075,"r":5000]}&sid='.$authData["eid"]);
+        "d":"","t":"","w":"","f":"","c":"","tc":"","ts":"","min":"","path":"","libId":"",
+        "oldItemId":"","oldZoneId":"","jp":"",
+        "p":["x":46.550095158667816,"y":24.72331063396075,"r":5000]}&sid='.$authData["eid"]);
         $response = $response->json();
 
         if (isset($response["error"]) ){

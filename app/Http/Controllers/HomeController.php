@@ -17,16 +17,14 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except("login");
+        $this->middleware('wialonAuth')->except("login");
     }
 
     public function login(Request $request)
     {
         $data = $request->all();
-        $user = User::first();
         Cache::put("access_token",$data["access_token"]);
         wialonSystemService::login($data["access_token"]);
-        Auth::login($user);
         return redirect()->route("home");
     }
 

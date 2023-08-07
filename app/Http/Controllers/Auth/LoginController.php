@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use App\services\wialonSystemService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
@@ -41,5 +42,13 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function logout(Request $request)
+    {
+        if (Cache::get("access_token")){
+            Cache::delete("access_token");
+        }
+        return redirect()->route("home");
     }
 }
