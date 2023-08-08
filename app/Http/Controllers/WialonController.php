@@ -56,4 +56,27 @@ class WialonController extends Controller
         }
         return $trips;
     }
+
+    public function powerExitStatic()
+    {
+        $items = wialonSystemService::getData();
+        $data = $this->data;
+        $items = collect($items["items"]);
+        $items = $items->pluck("id");
+        $out =[];
+        foreach ($items as $item){
+            $response = wialonSystemService::getMassage($item,1690269310,1691483431);
+
+            $daysHaveProblem = array_filter($response["messages"], function ($value)  {
+                if ($value["p"]["pwr_ext"] < 8)
+                    return $value;
+            });
+            if (count($daysHaveProblem) >= 3)
+                $out += [$item =>["massage"=>"power is reduction than three time","data"=>$daysHaveProblem]];
+            $out += [$item =>["massage"=>"power is stable","data"=>$daysHaveProblem]];
+
+        }
+        return ["massage"=>"done Calculation","data"=>$out];
+
+    }
 }

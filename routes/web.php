@@ -30,5 +30,6 @@ Route::middleware("wialonAuth")->group(function (){
     Route::get('/zone', [App\Http\Controllers\WialonController::class, 'getZones'])->name('zone');
     Route::get('/createZones', [App\Http\Controllers\WialonController::class, 'createZones'])->name('createZones');
     Route::get('/checkUpdates', [App\Http\Controllers\WialonController::class, 'checkUpdates'])->name('checkUpdates');
+    Route::get('/powerExitStatic', [App\Http\Controllers\WialonController::class, 'powerExitStatic'])->name('powerExitStatic');
 });
 

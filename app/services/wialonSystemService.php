@@ -156,11 +156,12 @@ class wialonSystemService
     public static function createZone(){
 
         $authData = Cache::get("data");
+//        dd($authData);
         $url = 'https://gps.tawasolmap.com/wialon/ajax.html?svc=resource/update_zone&params={'
-            .'"itemId":'.$authData["user"]["bact"].',"id":0,"callMode":"create","n":"test",'
+            .'"itemId":'.$authData["user"]["bact"].',"id":0,"callMode":"action:create","n":"test",'
             .'"d":"test add new zone","t":3,"w":50,"f":112,"c":2145942128,"tc":2145942128,"ts":10,"min":0,"max":18,"path":"library/poi/A_4.png","libId":0,'
-            .'"p":["x":46.550095158667816,"y":24.72331063396075,"r":5000],'
-//            .'"b":["min_x":46.301254836297915,"min_y":24.761788863418065,"max_x":46.16016667773903,"max_y":24.814835702424705,"cen_x":46.550095158667816,"cen_y":24.72331063396075,]'
+            .'"p":[{"x":46.550095158667816,"y":24.72331063396075,"r":5000}]'
+//            .'"b":[{"min_x":46.301254836297915,"min_y":24.761788863418065},{"max_x":46.16016667773903,"max_y":24.814835702424705},{"cen_x":46.550095158667816,"cen_y":24.72331063396075}]'
             .'}&sid='.$authData["eid"];
 //        dd($url);
         $ch = curl_init();
@@ -174,5 +175,10 @@ class wialonSystemService
         return json_decode($response1, true);
     }
 
-
+    public static function getMassage($item_id,$from,$to){
+        $authData = Cache::get("data");
+        return Http::get( 'https://gps.tawasolmap.com/wialon/ajax.html', 'svc=messages/load_interval&params={'.
+            '"itemId":'.$item_id.', "timeFrom":'.$from.', "timeTo":'.$to.', "flags":1, "flagsMask":65281,'.
+            '"loadCount":1000000}&sid='.$authData["eid"])->json();
+    }
 }
