@@ -35,3 +35,4 @@ Route::middleware("wialonAuth")->group(function (){
     Route::get('/testGpsSignal', [App\Http\Controllers\WialonController::class, 'testGpsSignal'])->name('testGpsSignal');
 });
 
+Route::get("/testData",[\App\Http\Controllers\liveKitCheckController::class,'test1']);
